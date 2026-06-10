@@ -1,0 +1,66 @@
+@{
+    var disciplinas = ViewBag.Disciplinas as List<string> ?? new List<string>();
+    var notas = ViewBag.Notas as List<double> ?? new List<double>();
+
+    double soma = 0;
+}
+
+<h2>Boletim de Notas</h2>
+
+<table border="1" cellpadding="10">
+    <thead>
+        <tr>
+            <th>Disciplina</th>
+            <th>Nota</th>
+            <th>Status</th>
+            <th>Classificação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < disciplinas.Count; i++)
+        {
+            soma += notas[i];
+            var notaAtual = notas[i];
+
+            <tr>
+                <td>@disciplinas[i]</td>
+                <td>@notaAtual.ToString("F1")</td>
+
+                <td>
+                    @if (notaAtual >= 6)
+                    {
+                        <span style="color:green; font-weight:bold;">Aprovado</span>
+                    }
+                    else
+                    {
+                        <span style="color:red; font-weight:bold;">Reprovado</span>
+                    }
+                </td>
+
+                <td>
+                    @* Correção definitiva: isolando a lógica em uma variável local C# *@
+                    @{
+                        string letraClassificacao = notaAtual switch
+                        {
+                            >= 9.0 => "A",
+                            >= 7.0 => "B",
+                            >= 5.0 => "C",
+                            _      => "D"
+                        };
+                    }
+                    @letraClassificacao
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (notas.Count > 0)
+{
+    var mediaGeral = soma / notas.Count;
+    <h3>Média Geral: @mediaGeral.ToString("F1")</h3>
+}
+else
+{
+    <h3>Nenhuma nota cadastrada.</h3>
+}
